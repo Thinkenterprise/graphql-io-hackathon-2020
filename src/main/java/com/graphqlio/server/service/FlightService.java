@@ -23,11 +23,15 @@
  */
 package com.graphqlio.server.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Service;
 
+import com.coxautodev.graphql.tools.GraphQLResolver;
+import com.graphqlio.server.http.proxy.service.GraphqlioHttpProxyService;
 import com.graphqlio.server.resolvers.MutationResolver;
 import com.graphqlio.server.resolvers.QueryResolver;
 import com.graphqlio.server.server.GsServer;
@@ -53,10 +57,17 @@ public class FlightService implements ApplicationRunner {
 	@Autowired
 	private GsServer gsServer;
 	
+	@Autowired
+	GraphqlioHttpProxyService httpProxyService;	
+	
 	public void run(ApplicationArguments args) throws Exception {	
 		
 		gsServer.registerGraphQLResolver(queryResolver);
 		gsServer.registerGraphQLResolver(mutationResolver);
+		
+		List<GraphQLResolver<Void>> resolvers = httpProxyService.getResolvers();
+		resolvers.forEach(r -> gsServer.registerGraphQLResolver(r));
+		
 		gsServer.start();		
 	}
 }

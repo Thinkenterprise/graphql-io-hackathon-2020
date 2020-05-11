@@ -2,6 +2,7 @@
 schema {
    query: Query
    mutation: Mutation
+   subscription: Subscription
 }
 
 type Query {
@@ -11,6 +12,10 @@ type Query {
 type Mutation {
 	updateRoute(flightNumber: String!, input: UpdateRouteInput!): Route
 }
+
+type Subscription { 
+}
+
 
 input UpdateRouteInput {
 	flightNumber: String!
