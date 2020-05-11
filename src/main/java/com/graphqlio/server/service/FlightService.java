@@ -57,16 +57,16 @@ public class FlightService implements ApplicationRunner {
 	@Autowired
 	private GsServer gsServer;
 	
-	@Autowired
-	GraphqlioHttpProxyService httpProxyService;	
+//	@Autowired
+//	GraphqlioHttpProxyService httpProxyService;	
 	
 	public void run(ApplicationArguments args) throws Exception {	
 		
 		gsServer.registerGraphQLResolver(queryResolver);
 		gsServer.registerGraphQLResolver(mutationResolver);
 		
-		List<GraphQLResolver<Void>> resolvers = httpProxyService.getResolvers();
-		resolvers.forEach(r -> gsServer.registerGraphQLResolver(r));
+//		List<GraphQLResolver<Void>> resolvers = httpProxyService.getResolvers();
+//		resolvers.forEach(r -> gsServer.registerGraphQLResolver(r));
 		
 		gsServer.start();		
 	}
