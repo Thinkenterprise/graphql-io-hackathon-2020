@@ -23,7 +23,10 @@
  */
 package com.graphqlio.server.domain;
 
-import org.springframework.data.annotation.Id;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 /**
  * Implementation of the Route type from graphql schema.
@@ -31,24 +34,17 @@ import org.springframework.data.annotation.Id;
  * @author Michael Schäfer
  * @author Torsten Kühnert
  */
+@Entity
 public class Route {
 
-  @Id private Long id;
+  @Id
+  @GeneratedValue(strategy=GenerationType.AUTO) 
+  private Long id;
 
   private String flightNumber;
   private String departure;
   private String destination;
-
-  public Route(String flightNumber) {
-    this.flightNumber = flightNumber;
-  }
-
-  public Route(String flightNumber, String departure, String destination) {
-    this.flightNumber = flightNumber;
-    this.destination = destination;
-    this.departure = departure;
-  }
-
+  
   public Long getId() {
     return id;
   }

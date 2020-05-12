@@ -62,7 +62,7 @@ public class MutationResolver implements GraphQLMutationResolver {
   @Transactional
   public Route updateRoute(
       String flightNumber, UpdateRouteInput input, DataFetchingEnvironment env) {
-    Route route = routeRepository.getByFlightNumber(flightNumber);
+    Route route = routeRepository.findByFlightNumber(flightNumber);
 
     route.setFlightNumber(input.getFlightNumber());
     route.setDeparture(input.getDeparture());

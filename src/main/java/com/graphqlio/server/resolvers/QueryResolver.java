@@ -37,6 +37,7 @@ import com.graphqlio.gts.tracking.GtsRecord;
 import com.graphqlio.gts.tracking.GtsRecord.GtsArityType;
 import com.graphqlio.gts.tracking.GtsRecord.GtsOperationType;
 import com.graphqlio.gts.tracking.GtsScope;
+import com.graphqlio.server.domain.Route;
 import com.graphqlio.server.domain.RouteRepository;
 
 import graphql.schema.DataFetchingEnvironment;

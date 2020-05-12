@@ -23,11 +23,7 @@
  */
 package com.graphqlio.server.domain;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Random;
-
-import org.springframework.stereotype.Component;
+import org.springframework.data.repository.CrudRepository;
 
 /**
  * A simple repository where the route instances are hold.
@@ -35,38 +31,8 @@ import org.springframework.stereotype.Component;
  * @author Michael Schäfer
  * @author Torsten Kühnert
  */
-@Component
-public class RouteRepository {
-
-  HashMap<String, Route> repositoryMap = new HashMap<String, Route>();
-
-  public RouteRepository() {
-    Route a = new Route("LH2113", "MUC", "BRE");
-    a.setId(new Random().nextLong());
-    repositoryMap.put("LH2113", a);
-
-    Route b = new Route("BA7611", "HAM", "BCN");
-    b.setId(new Random().nextLong());
-    repositoryMap.put("BA7611", b);
-
-    Route c = new Route("UA1000", "FRA", "CGN");
-    c.setId(new Random().nextLong());
-    repositoryMap.put("UA1000", c);
-  }
-
-  public Collection<Route> findAll() {
-    return repositoryMap.values();
-  }
-
-  public Route getByFlightNumber(String flightNumber) {
-    return repositoryMap.get(flightNumber);
-  }
-
-  public Route save(Route route) {
-    if (route.getId() == null) {
-      route.setId(new Random().nextLong());
-    }
-    repositoryMap.put(route.getFlightNumber(), route);
-    return route;
-  }
+public interface RouteRepository extends CrudRepository<Route, Long> {
+  
+  public Route findByFlightNumber(String flightNumber);
+  
 }
