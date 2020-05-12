@@ -26,6 +26,9 @@ package com.graphqlio.server.resolvers;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.graphqlio.server.domain.Airport;
+import com.graphqlio.server.domain.AirportRepository;
+import com.graphqlio.server.domain.Route;
 import org.springframework.stereotype.Component;
 
 import com.coxautodev.graphql.tools.GraphQLQueryResolver;
@@ -34,7 +37,6 @@ import com.graphqlio.gts.tracking.GtsRecord;
 import com.graphqlio.gts.tracking.GtsRecord.GtsArityType;
 import com.graphqlio.gts.tracking.GtsRecord.GtsOperationType;
 import com.graphqlio.gts.tracking.GtsScope;
-import com.graphqlio.server.domain.Flight;
 import com.graphqlio.server.domain.RouteRepository;
 
 import graphql.schema.DataFetchingEnvironment;
@@ -49,16 +51,18 @@ import graphql.schema.DataFetchingEnvironment;
 public class QueryResolver implements GraphQLQueryResolver {
 
   private RouteRepository routeRepository;
+  private AirportRepository airportRepository;
 
-  public QueryResolver(RouteRepository routeRepository) {
+  public QueryResolver(RouteRepository routeRepository, AirportRepository airportRepository) {
     this.routeRepository = routeRepository;
+    this.airportRepository = airportRepository;
   }
 
-  public List<Flight> allRoutes(DataFetchingEnvironment env) {
+  public List<Route> allRoutes(DataFetchingEnvironment env) {
 
-    Iterable<Flight> allRoutes = routeRepository.findAll();
+    Iterable<Route> allRoutes = routeRepository.findAll();
 
-    List<Flight> allRoutesList = new ArrayList<>();
+    List<Route> allRoutesList = new ArrayList<>();
     allRoutes.forEach(allRoutesList::add);
 
     List<String> dstIds = new ArrayList<>();
@@ -72,11 +76,37 @@ public class QueryResolver implements GraphQLQueryResolver {
         GtsRecord.builder()
             .op(GtsOperationType.READ)
             .arity(GtsArityType.ALL)
-            .dstType(Flight.class.getName())
+            .dstType(Route.class.getName())
             .dstIds(dstIds.toArray(new String[dstIds.size()]))
             .dstAttrs(new String[] {"*"})
             .build());
 
     return allRoutesList;
+  }
+
+  public List<Airport> allAirports(DataFetchingEnvironment env) {
+
+    Iterable<Airport> allAirport = airportRepository.findAll();
+
+    List<Airport> allAirportsList = new ArrayList<>();
+    allAirport.forEach(allAirportsList::add);
+
+    List<String> dstIds = new ArrayList<>();
+    if (!allAirportsList.isEmpty()) {
+      allAirportsList.forEach(airport -> dstIds.add(airport.getId().toString()));
+    } else dstIds.add("*");
+
+    GtsContext context = env.getContext();
+    GtsScope scope = context.getScope();
+    scope.addRecord(
+            GtsRecord.builder()
+                    .op(GtsOperationType.READ)
+                    .arity(GtsArityType.ALL)
+                    .dstType(Airport.class.getName())
+                    .dstIds(dstIds.toArray(new String[dstIds.size()]))
+                    .dstAttrs(new String[] {"*"})
+                    .build());
+
+    return allAirportsList;
   }
 }

@@ -23,61 +23,42 @@
  */
 package com.graphqlio.server.domain;
 
-import org.springframework.data.annotation.Id;
+import org.springframework.stereotype.Component;
 
-/**
- * Implementation of the Route type from graphql schema.
- *
- * @author Michael Schäfer
- * @author Torsten Kühnert
- */
-public class Flight {
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Optional;
+import java.util.Random;
 
-  @Id private Long id;
+@Component
+public class AirportRepository {
 
-  private String flightNumber;
-  private String departure;
-  private String destination;
+  HashMap<String, Airport> repositoryMap = new HashMap<>();
 
-  public Flight(String flightNumber) {
-    this.flightNumber = flightNumber;
+  public AirportRepository() {
+    Airport a = new Airport("MUC", "München");
+    a.setId(new Random().nextLong());
+    repositoryMap.put("MUC", a);
+
+    Airport b = new Airport("FRA", "München");
+    b.setId(new Random().nextLong());
+    repositoryMap.put("FRA", b);
   }
 
-  public Flight(String flightNumber, String departure, String destination) {
-    this.flightNumber = flightNumber;
-    this.destination = destination;
-    this.departure = departure;
+  public Collection<Airport> findAll() {
+    return repositoryMap.values();
   }
 
-  public Long getId() {
-    return id;
+  public Optional<Airport> getByName(String name) {
+    return Optional.ofNullable(repositoryMap.get(name));
+
   }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
-
-  public String getFlightNumber() {
-    return flightNumber;
-  }
-
-  public void setFlightNumber(String flightNumber) {
-    this.flightNumber = flightNumber;
-  }
-
-  public String getDeparture() {
-    return departure;
-  }
-
-  public void setDeparture(String departure) {
-    this.departure = departure;
-  }
-
-  public String getDestination() {
-    return destination;
-  }
-
-  public void setDestination(String destination) {
-    this.destination = destination;
+  public Airport save(Airport airport) {
+    if (airport.getId() == null) {
+      airport.setId(new Random().nextLong());
+    }
+    repositoryMap.put(airport.getName(), airport);
+    return airport;
   }
 }

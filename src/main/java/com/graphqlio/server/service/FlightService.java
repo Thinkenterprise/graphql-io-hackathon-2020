@@ -23,15 +23,11 @@
  */
 package com.graphqlio.server.service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Service;
 
-import com.coxautodev.graphql.tools.GraphQLResolver;
-import com.graphqlio.server.http.proxy.service.GraphqlioHttpProxyService;
 import com.graphqlio.server.resolvers.MutationResolver;
 import com.graphqlio.server.resolvers.QueryResolver;
 import com.graphqlio.server.server.GsServer;

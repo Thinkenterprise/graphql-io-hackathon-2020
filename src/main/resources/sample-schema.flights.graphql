@@ -6,10 +6,12 @@ schema {
 
 type Query {
 	allRoutes: [Route]!
+	allAirports: [Airport]!
 }
 
 type Mutation {
 	updateRoute(flightNumber: String!, input: UpdateRouteInput!): Route
+	updateAirport(name: String!, city: String!): Airport
 }
 
 
@@ -24,4 +26,10 @@ type Route {
 	flightNumber: String!
 	departure: String
 	destination: String
+}
+
+type Airport {
+	id: Long!
+	name: String!
+	city: String
 }

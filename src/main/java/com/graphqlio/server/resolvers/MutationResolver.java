@@ -32,11 +32,15 @@ import com.graphqlio.gts.tracking.GtsRecord;
 import com.graphqlio.gts.tracking.GtsRecord.GtsArityType;
 import com.graphqlio.gts.tracking.GtsRecord.GtsOperationType;
 import com.graphqlio.gts.tracking.GtsScope;
-import com.graphqlio.server.domain.Flight;
+import com.graphqlio.server.domain.Airport;
+import com.graphqlio.server.domain.Route;
 import com.graphqlio.server.domain.RouteRepository;
+import com.graphqlio.server.domain.AirportRepository;
 import com.graphqlio.server.domain.UpdateRouteInput;
 
 import graphql.schema.DataFetchingEnvironment;
+
+import java.util.Optional;
 
 /**
  * Root mutation resolver for resolving updateRoute.
@@ -48,34 +52,58 @@ import graphql.schema.DataFetchingEnvironment;
 public class MutationResolver implements GraphQLMutationResolver {
 
   private RouteRepository routeRepository;
+  private AirportRepository airportRepository;
 
-  public MutationResolver(RouteRepository routeRepository) {
+  public MutationResolver(RouteRepository routeRepository, AirportRepository airportRepository) {
     this.routeRepository = routeRepository;
+    this.airportRepository = airportRepository;
   }
 
   @Transactional
-  public Flight updateRoute(
+  public Route updateRoute(
       String flightNumber, UpdateRouteInput input, DataFetchingEnvironment env) {
-    Flight flight = routeRepository.getByFlightNumber(flightNumber);
+    Route route = routeRepository.getByFlightNumber(flightNumber);
 
-    flight.setFlightNumber(input.getFlightNumber());
-    flight.setDeparture(input.getDeparture());
-    flight.setDestination(input.getDestination());
+    route.setFlightNumber(input.getFlightNumber());
+    route.setDeparture(input.getDeparture());
+    route.setDestination(input.getDestination());
 
-    Flight modifiedRoute = null;
-    modifiedRoute = routeRepository.save(flight);
+    Route modifiedRoute = routeRepository.save(route);
 
     GtsContext context = env.getContext();
     GtsScope scope = context.getScope();
+
     scope.addRecord(
         GtsRecord.builder()
             .op(GtsOperationType.UPDATE)
             .arity(GtsArityType.ONE)
-            .dstType(Flight.class.getName())
+            .dstType(Route.class.getName())
             .dstIds(new String[] {modifiedRoute.getId().toString()})
             .dstAttrs(new String[] {"*"})
             .build());
 
     return modifiedRoute;
+  }
+
+  @Transactional
+  public Airport updateAirport(String name, String city, DataFetchingEnvironment env) {
+    Airport airport = airportRepository.getByName(name).orElseGet(() -> new Airport(name, city));
+    airport.setCity(city);
+
+    Airport modifiedAirport = airportRepository.save(airport);
+
+    GtsContext context = env.getContext();
+    GtsScope scope = context.getScope();
+
+    scope.addRecord(
+            GtsRecord.builder()
+                    .op(GtsOperationType.UPDATE)
+                    .arity(GtsArityType.ONE)
+                    .dstType(Airport.class.getName())
+                    .dstIds(new String[] {modifiedAirport.getId().toString()})
+                    .dstAttrs(new String[] {"*"})
+                    .build()); // => ScopeId {flightNumber, dest., dep.}
+
+    return modifiedAirport;
   }
 }
