@@ -23,42 +23,10 @@
  */
 package com.graphqlio.server.domain;
 
-import org.springframework.stereotype.Component;
+import org.springframework.data.repository.CrudRepository;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Optional;
-import java.util.Random;
+public interface AirportRepository extends CrudRepository<Airport, Long> {
 
-@Component
-public class AirportRepository {
+  public Airport findByName(String name);
 
-  HashMap<String, Airport> repositoryMap = new HashMap<>();
-
-  public AirportRepository() {
-    Airport a = new Airport("MUC", "München");
-    a.setId(new Random().nextLong());
-    repositoryMap.put("MUC", a);
-
-    Airport b = new Airport("FRA", "München");
-    b.setId(new Random().nextLong());
-    repositoryMap.put("FRA", b);
-  }
-
-  public Collection<Airport> findAll() {
-    return repositoryMap.values();
-  }
-
-  public Optional<Airport> getByName(String name) {
-    return Optional.ofNullable(repositoryMap.get(name));
-
-  }
-
-  public Airport save(Airport airport) {
-    if (airport.getId() == null) {
-      airport.setId(new Random().nextLong());
-    }
-    repositoryMap.put(airport.getName(), airport);
-    return airport;
-  }
 }

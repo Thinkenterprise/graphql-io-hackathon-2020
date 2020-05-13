@@ -26,6 +26,8 @@ package com.graphqlio.server.resolvers;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 import com.coxautodev.graphql.tools.GraphQLMutationResolver;
 import com.graphqlio.gts.context.GtsContext;
 import com.graphqlio.gts.tracking.GtsRecord;
@@ -39,8 +41,6 @@ import com.graphqlio.server.domain.AirportRepository;
 import com.graphqlio.server.domain.UpdateRouteInput;
 
 import graphql.schema.DataFetchingEnvironment;
-
-import java.util.Optional;
 
 /**
  * Root mutation resolver for resolving updateRoute.
@@ -87,7 +87,7 @@ public class MutationResolver implements GraphQLMutationResolver {
 
   @Transactional
   public Airport updateAirport(String name, String city, DataFetchingEnvironment env) {
-    Airport airport = airportRepository.getByName(name).orElseGet(() -> new Airport(name, city));
+    Airport airport = Optional.ofNullable(airportRepository.findByName(name)).orElseGet(() -> new Airport(name, city));
     airport.setCity(city);
 
     Airport modifiedAirport = airportRepository.save(airport);
