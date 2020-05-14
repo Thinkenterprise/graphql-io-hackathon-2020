@@ -3,4 +3,4 @@ insert into route(id, flight_Number, departure, destination) values(102, 'BA7611
 insert into route(id, flight_Number, departure, destination) values(103, 'UA1000','FRA','CGN');
 
 insert into airport(id, name, city) values(201, 'MUC', 'München');
-insert into airport(id, name, city) values(202, 'FRA', 'München');
+insert into airport(id, name, city) values(202, 'FRA', 'Frankfurt');

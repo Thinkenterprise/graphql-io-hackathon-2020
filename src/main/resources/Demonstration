@@ -1,0 +1,51 @@
+	query allAirports {
+	  _Subscription {
+	    subscribe
+	  }
+	  allAirports {
+	    name
+	    city
+	  }
+	}
+
+	query allRoutes {
+	  _Subscription {
+	    subscribe
+	  }
+	  allRoutes {
+	    flightNumber
+	    departure
+	    destination
+	  }
+	}
+
+	mutation {
+	  updateAirport(name: "BER", city: "Berlin") {
+	    id
+	    name
+	    city
+	  }
+	}
+
+	mutation {
+	  updateRoute(
+	    flightNumber: "LH2113"
+	    input: { flightNumber: "LH2113", departure: "HAJ", destination: "BER" }
+	  ) {
+	    flightNumber
+	    departure
+	    destination
+	  }
+	}
+
+	subscription allChanges {
+	  outdated
+	}
+
+	subscription aiportChanges {
+	  notifications(scope: "73a117fd-4bc3-57ce-844c-e8bb39a7ba86")
+	}
+
+	subscription routeChanges {
+	  notifications(scope: "85ae78e5-bf62-5c74-804b-85e05a546a95")
+    }
